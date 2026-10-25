@@ -1,60 +1,70 @@
-# TaskTracker
+# TaskTracker - Bootcamp II
 
-Projeto desenvolvido na Fase 2 do Bootcamp II.
-
-O TaskTracker é uma aplicação simples de linha de comando para organizar tarefas. O programa permite cadastrar novas tarefas e visualizar as tarefas já registradas.
+Aplicação de linha de comando em Python para cadastrar e listar tarefas. Esta versão corresponde à fase final do bootcamp: o código da fase 2 foi empacotado em uma imagem Docker e pode ser executado em um contêiner interativo.
 
 ## Funcionalidades
 
-- Cadastrar uma nova tarefa
-- Validar título obrigatório
-- Validar prioridade
-- Definir o status inicial como `Pendente`
-- Visualizar todas as tarefas cadastradas
-- Informar quando ainda não existem tarefas
+- Cadastrar tarefa com título, descrição, prioridade e data limite.
+- Validar título obrigatório e prioridade (`Alta`, `Média` ou `Baixa`).
+- Criar a tarefa com status inicial `Pendente`.
+- Listar tarefas cadastradas durante a execução.
 
-## Dados de cada tarefa
+As tarefas ficam em memória e são perdidas ao encerrar o programa. A persistência de dados não faz parte desta versão.
 
-Cada tarefa possui:
-
-- Título
-- Descrição
-- Prioridade
-- Data limite
-- Status
-
-## Tecnologias utilizadas
-
-- Python 3
-- Git
-- GitHub
-
-## Estrutura do projeto
+## Estrutura
 
 ```text
 tasktracker-projeto/
-├── README.md
 ├── .gitignore
+├── .dockerignore
 ├── docs/
 │   └── planejamento_logico.pdf
-└── src/
-    └── main.py
+├── src/
+│   └── main.py
+├── Dockerfile
+├── docker-compose.yml
+└── README.md
 ```
 
-## Como executar
+O planejamento lógico da fase 1 e o código da fase 2 permanecem no repositório para rastreabilidade.
 
-1. Tenha o Python 3 instalado no computador.
-2. Abra o terminal na pasta do projeto.
-3. Execute:
+## Executar com Python
+
+Na raiz do repositório, use `python src/main.py` (ou `python3 src/main.py` em sistemas onde esse é o comando instalado).
+
+## Executar com Docker
+
+Instale e inicie o Docker Desktop ou outro ambiente com Docker Engine. No terminal, entre na raiz deste repositório.
+
+### Construir a imagem
 
 ```bash
-python src/main.py
+docker build -t tasktracker-app .
 ```
 
-Em alguns computadores, o comando pode ser:
+### Executar o contêiner interativo
 
 ```bash
-python3 src/main.py
+docker run -it --rm tasktracker-app
 ```
 
-Depois disso, basta escolher uma opção no menu exibido no terminal.
+O parâmetro `-it` conecta a entrada do teclado e o terminal ao menu. `--rm` remove o contêiner ao sair.
+
+### Executar com Docker Compose
+
+```bash
+docker compose run --rm tasktracker-app
+```
+
+O serviço define `stdin_open: true` e `tty: true`, necessários para o `input()` do programa. O Compose constrói a imagem a partir do `Dockerfile` caso ela ainda não exista.
+
+## Demonstração sugerida
+
+No menu, escolha `2` para mostrar a lista vazia. Depois escolha `1`, tente um título vazio e uma prioridade inválida para mostrar as validações, cadastre uma tarefa válida e escolha `2` novamente para exibi-la. Por fim, escolha `3` para sair.
+
+## Arquivos de containerização
+
+- `Dockerfile`: usa `python:3.11-slim`, define `/app` como diretório de trabalho, ativa logs sem buffer, copia `src/` e inicia `src/main.py`.
+- `docker-compose.yml`: constrói a imagem e habilita a interação com o terminal.
+- `.dockerignore`: exclui arquivos desnecessários do contexto de build.
+
